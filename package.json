@@ -1,0 +1,15 @@
+{
+  "name": "actionshot",
+  "version": "0.0.1",
+  "description": "Capture static versions of your highly dynamic web applications.",
+  "author": "Oli Cannings",
+  "dependencies": {
+    "phantomjs": "~1.8.2-1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
+}
