@@ -1,11 +1,10 @@
 {
-  "name": "actionshot",
+  "name": "actionshot-ajax-example",
   "version": "0.0.1",
-  "description": "Capture static versions of your highly dynamic web applications.",
+  "description": "An example ajax page example for actionshot",
   "author": "Oli Cannings",
   "dependencies": {
-    "phantomjs": "~1.8.2-1",
-    "optimist": "~0.3.5"
+    "express": "~3.1.0"
   },
   "scripts": {
     "start": "node server.js"
