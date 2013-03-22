@@ -64,6 +64,7 @@
           <li><a href="/home">Home</a></li>
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
+          <li><a href="/modal">Modal</a></li>
         </ul>
         <h3 class="muted">Project name</h3>
       </div>
@@ -85,15 +86,29 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/js/jquery.js"></script>
+    <script src="/js/jquery.history.js"></script>
+    <script src="/js/bootstrap-modal.js"></script>
     <script src="/client/actionshot.js"></script>
     <script>
+      var History = window.History;
       $(function() {
+        if (!History.enabled) {
+          console.log("pushState not here :(");
+          return;
+        }
         $("ul li a").on("click", function(e) {
           e.preventDefault();
           var location = $(e.currentTarget).attr("href");
           loadPage(location);
-          window.history.pushState(location, document.title, location);
+          History.pushState(null, null, location);
         });
+
+        $(".modal a.js-close").on("click", function(e) {
+          e.preventDefault();
+          $("#myModal").modal("hide");
+          History.back();
+        });
+        loadPage(History.getState().hash);
       });
 
       var loadPage = function(page) {
@@ -101,16 +116,35 @@
           page = "/home";
         }
         $.get("pages" + page + ".html", function(content) {
-          $(".jumbotron").html(content);
+          if (page !== "/modal") {
+            $(".jumbotron").html(content);
+          } else {
+            $("#myModal .modal-body").html(content);
+            $("#myModal").modal();
+          }
           ActionShot.capture();
         });
       }
 
-      $(window).bind("popstate", function(evt) {
-        var location = history.state || window.location.pathname;
-        loadPage(location);
+      History.Adapter.bind(window,'statechange',function(){
+        var State = History.getState();
+        loadPage(State.hash);
       });
     </script>
+   
+    <!-- Modal -->
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <a href="/home" class="close js-close" aria-hidden="true">&times;</a>
+        <h3 id="myModalLabel">Modal header</h3>
+      </div>
+      <div class="modal-body">
+        <p>HIYA</p>
+      </div>
+      <div class="modal-footer">
+        <a href="/home" class="btn js-close" aria-hidden="true">Close</a>
+      </div>
+    </div>
   </body>
 </html>
 

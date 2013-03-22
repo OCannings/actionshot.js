@@ -20,7 +20,6 @@ app.get("/:file", function(req, res) {
       console.log("Cached, nice job!");
     }
     var page = fs.readFileSync(dir + file, "utf8")
-    console.log(page);
     res.send(page);
   });
 });
