@@ -16,14 +16,16 @@
 
   // Disable jQuery animations
   // todo: make optional
-  window.jQuery && (jQuery.fx.off = true);
+  if (ActionShot.capturing) {
+    window.jQuery && (jQuery.fx.off = true);
+  }
 
   // Conditions which need to be met before a capture will take place
   ActionShot.conditions = [];
 
   ActionShot.capture = stub(function(condition) {
     var poll, conditionIndex;
-    
+
     conditionIndex = this.conditions.indexOf(condition);
     if (conditionIndex !== -1) {
       this.conditions.splice(conditionIndex, 1);
@@ -32,7 +34,7 @@
     if (this.conditions.length === 0) {
       poll = setInterval(function callPhantom() {
         window.callPhantom("actionshot:capture");
-      }, 100);
+      }, 50);
       callPhantom();
     }
   });

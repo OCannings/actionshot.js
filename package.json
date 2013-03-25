@@ -5,7 +5,8 @@
   "author": "Oli Cannings",
   "dependencies": {
     "phantomjs": "~1.8.2-1",
-    "optimist": "~0.3.5"
+    "optimist": "~0.3.5",
+    "underscore": "~1.4.4"
   },
   "scripts": {
     "start": "node server.js"
