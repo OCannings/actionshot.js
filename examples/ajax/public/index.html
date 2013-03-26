@@ -60,10 +60,10 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-          <li><a href="/home">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-          <li><a href="/modal">Modal</a></li>
+          <li><a href="/pages/home">Home</a></li>
+          <li><a href="/pages/about">About</a></li>
+          <li><a href="/pages/contact">Contact</a></li>
+          <li><a href="/pages/modal">Modal</a></li>
         </ul>
         <h3 class="muted">Project name</h3>
       </div>
@@ -99,7 +99,6 @@
         $("ul li a").on("click", function(e) {
           e.preventDefault();
           var location = $(e.currentTarget).attr("href");
-          loadPage(location);
           History.pushState(null, null, location);
         });
 
@@ -112,10 +111,11 @@
       });
 
       var loadPage = function(page) {
+        page = page.replace("/pages", "");
         if (page.length === 1) {
           page = "/home";
         }
-        $.get("pages" + page + ".html", function(content) {
+        $.get("/content" + page + ".html", function(content) {
           if (page !== "/modal") {
             $(".jumbotron").html(content);
           } else {
@@ -135,14 +135,14 @@
     <!-- Modal -->
     <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
-        <a href="/home" class="close js-close" aria-hidden="true">&times;</a>
+        <a href="/pages/home" class="close js-close" aria-hidden="true">&times;</a>
         <h3 id="myModalLabel">Modal header</h3>
       </div>
       <div class="modal-body">
         <p>HIYA</p>
       </div>
       <div class="modal-footer">
-        <a href="/home" class="btn js-close" aria-hidden="true">Close</a>
+        <a href="/pages/home" class="btn js-close" aria-hidden="true">Close</a>
       </div>
     </div>
   </body>

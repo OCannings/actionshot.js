@@ -6,9 +6,9 @@ var app = express();
 app.use(express.static(__dirname + '/public'));
 app.use("/client", express.static(__dirname + "/../../client/"));
 
-app.get("/:file", function(req, res) {
+app.get("/pages/:page", function(req, res) {
   var dir, file;
-  file = req.params.file + ".html";
+  file = req.params.page + ".html";
 
   dir = __dirname + "/cache/";
   fs.exists(dir + file, function(exists) {

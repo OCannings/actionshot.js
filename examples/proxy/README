@@ -1,0 +1,6 @@
+run:
+
+node examples/ajax/server.js
+node examples/proxy/server.js
+
+visit http://localhost:3001/
