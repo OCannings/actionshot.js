@@ -60,7 +60,7 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-          <li><a href="/pages/home">Home</a></li>
+          <li><a href="/pages/home" class="as-hide">Home</a></li>
           <li><a href="/pages/about">About</a></li>
           <li><a href="/pages/contact">Contact</a></li>
           <li><a href="/pages/modal">Modal</a></li>
@@ -119,8 +119,12 @@
           if (page !== "/modal") {
             $(".jumbotron").html(content);
           } else {
-            $("#myModal .modal-body").html(content);
-            $("#myModal").modal();
+            if (ActionShot.capturing) {
+              $(".jumbotron").html(content);
+            } else {
+              $("#myModal .modal-body").html(content);
+              $("#myModal").modal();
+            }
           }
           ActionShot.capture();
         });
@@ -131,7 +135,7 @@
         loadPage(State.hash);
       });
     </script>
-   
+
     <!-- Modal -->
     <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">

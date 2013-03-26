@@ -46,3 +46,12 @@
   });
 
 }).call(this);
+
+if (ActionShot.capturing) {
+  document.write("<style id='as-override'> .as-hide { display: none !important }</style>");
+} else {
+  setTimeout(function() {
+    var el = document.getElementById("as-override");
+    el.parentNode.removeChild(el);
+  }, 0);
+}
