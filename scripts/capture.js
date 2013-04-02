@@ -66,4 +66,9 @@ page.open(url, function (status) {
 
     phantom.exit();
   };
+
+  // todo: make timeout config
+  setTimeout(function() {
+    phantom.exit();
+  }, 3000);
 });

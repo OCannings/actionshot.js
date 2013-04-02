@@ -8,8 +8,14 @@
     "optimist": "~0.3.5",
     "underscore": "~1.4.4"
   },
+  "devDependencies": {
+    "mocha": "~1.8.2",
+    "request": "~2.16.6",
+    "express": "~3.1.0"
+  },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha"
   },
   "engines": {
     "node": "0.8.x"

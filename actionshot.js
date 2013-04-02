@@ -21,6 +21,12 @@ var captureUrl = function(url) {
 
   if (crawl) {
     phantomArgs = phantomArgs.concat(["--html", "--links", "--title"]);
+  } else {
+    "links html title".split(" ").forEach(function(code) {
+      if (argv[code] || argv[code[0]]) {
+        phantomArgs.push("-" + code[0]);
+      }
+    });
   }
 
   var callback = function(err, stdout, stderr) {
@@ -31,7 +37,6 @@ var captureUrl = function(url) {
         data = JSON.parse(data);
       } catch (e) {
         console.log(data);
-        console.log("ERROR LOL");
       }
       links = links.concat(data.links);
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+  <head>
+    <title>Easy as</title>
+    <script src="actionshot.js"></script>
+  </head>
+  <body>
+    <script>
+      ActionShot.after("a");
+      ActionShot.after("b");
+      ActionShot.after("c");
+
+      ActionShot.capture();
+
+      setTimeout(function() {
+        document.title += " 1,";
+        ActionShot.capture("c");
+      }, 100);
+
+      setTimeout(function() {
+        document.title += " 2,";
+        ActionShot.capture("b");
+      }, 200);
+
+      setTimeout(function() {
+        document.title += " 3.";
+        ActionShot.capture("a");
+      }, 300);
+    </script>
+  </body>
+</html>

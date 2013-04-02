@@ -1,12 +1,12 @@
 (function() {
   "use strict";
 
-  var ActionShot;
-  window.ActionShot = ActionShot = {};
+  var ActionShot, root = this;
+  root.ActionShot = ActionShot = {};
 
   // Is the page being captured - useful for 
   // conditional template rendering
-  ActionShot.capturing = !!window.callPhantom;
+  ActionShot.capturing = !!root.callPhantom;
 
   // Method for automatically stubbing methods when the page
   // isn't being fetched by PhantomJS
@@ -17,7 +17,7 @@
   // Disable jQuery animations
   // todo: make optional
   if (ActionShot.capturing) {
-    window.jQuery && (jQuery.fx.off = true);
+    root.jQuery && (jQuery.fx.off = true);
   }
 
   // Conditions which need to be met before a capture will take place
@@ -33,7 +33,7 @@
 
     if (this.conditions.length === 0) {
       poll = setInterval(function callPhantom() {
-        window.callPhantom("actionshot:capture");
+        root.callPhantom("actionshot:capture");
       }, 50);
       callPhantom();
     }
@@ -47,6 +47,7 @@
 
 }).call(this);
 
+/*
 if (ActionShot.capturing) {
   document.write("<style id='as-override'> .as-hide { display: none !important }</style>");
 } else {
@@ -55,3 +56,4 @@ if (ActionShot.capturing) {
     el.parentNode.removeChild(el);
   }, 0);
 }
+*/
