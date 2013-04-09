@@ -4,9 +4,12 @@
   "description": "Capture static versions of your highly dynamic web applications.",
   "author": "Oli Cannings",
   "dependencies": {
-    "phantomjs": "~1.8.2-1",
     "optimist": "~0.3.5",
     "underscore": "~1.4.4"
+  },
+  "main": "./actionshot.js",
+  "bin": {
+    "actionshot": "./bin/actionshot.js"
   },
   "devDependencies": {
     "mocha": "~1.8.2",

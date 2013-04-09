@@ -3,12 +3,29 @@ var system = require("system"),
   args = system.args;
 
 var url = args[1];
+var browserLogs = "";
 
 var arg = function(long, short) {
   return args.indexOf(long) > 0 || args.indexOf(short) > 0;
 }
 
+var error = function(message) {
+  system.stderr.writeLine(message + "\n");
+  if (browserLogs) {
+    system.stderr.writeLine("Browser logs:");
+    system.stderr.writeLine(browserLogs);
+  }
+  phantom.exit(1);
+}
+
+page.customHeaders = {"X-ActionShot": "true"};
+
+page.onConsoleMessage = function(log) {
+  browserLogs += "  " + log + "\n";
+}
+
 page.open(url, function (status) {
+
   page.onCallback = function(msg) {
     var links, html, doctype, title, stringOutput, jsonOutput = {};
 
@@ -67,8 +84,8 @@ page.open(url, function (status) {
     phantom.exit();
   };
 
-  // todo: make timeout config
+  // TODO: make timeout config
   setTimeout(function() {
-    phantom.exit();
+    error("Capture script timed out, please make sure you've included the client side JavaScript and called ActionShot.capture()");
   }, 3000);
 });

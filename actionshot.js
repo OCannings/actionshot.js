@@ -4,6 +4,8 @@ var exec = require("child_process").exec,
   Url = require("url"),
   fs = require("fs");
 
+const DEBUG = (argv.d || argv.debug || false);
+
 var url = argv._[0],
   output = argv._[1],
   crawl = argv.crawl;
@@ -11,11 +13,20 @@ var url = argv._[0],
 var baseUrl = Url.parse(url);
 baseUrl = baseUrl.protocol + "//" + baseUrl.host;
 
+var error = function(message) {
+  console.error("ActionShot finished with errors:");
+  message && console.error(message);
+}
+
 var links = [];
 var used = [];
 var pages = {};
 
 var captureUrl = function(url) {
+  if (DEBUG) {
+    console.log("Capturing " + url + "...");
+  }
+
   var start = new Date().getTime();
   var phantomArgs = ["phantomjs", __dirname + "/scripts/capture.js", url];
 
@@ -30,13 +41,17 @@ var captureUrl = function(url) {
   }
 
   var callback = function(err, stdout, stderr) {
+    if (DEBUG && stderr) {
+      error(stderr);
+    }
+
     var data = stdout.toString();
 
     if (crawl) {
       try {
         data = JSON.parse(data);
       } catch (e) {
-        console.log(data);
+        error("Invalid JSON returned from capture script:\n" + data);
       }
       links = links.concat(data.links);
 

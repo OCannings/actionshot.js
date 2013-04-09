@@ -4,9 +4,9 @@
   var ActionShot, root = this;
   root.ActionShot = ActionShot = {};
 
-  // Is the page being captured - useful for 
+  // Is the page being captured - useful for
   // conditional template rendering
-  ActionShot.capturing = !!root.callPhantom;
+  ActionShot.capturing = ActionShot.fallback = !!root.callPhantom;
 
   // Method for automatically stubbing methods when the page
   // isn't being fetched by PhantomJS
@@ -32,10 +32,10 @@
     }
 
     if (this.conditions.length === 0) {
-      poll = setInterval(function callPhantom() {
+      /*poll = setInterval(function callPhantom() {
         root.callPhantom("actionshot:capture");
-      }, 50);
-      callPhantom();
+      }, 50);*/
+      setTimeout(callPhantom, 0);
     }
   });
 
