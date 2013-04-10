@@ -13,7 +13,7 @@ describe('ActionShot JS', function(){
     done();
   });
 
-  describe('#doctype', function(){
+  describe('capturing dynamic content', function(){
     it('should extract the correct doctype', function(done){
       exec("node ./actionshot.js http://localhost:8000/doctype.html", function(err, stdout, stderr) {
         var doctype = stdout.match(/^.*$/m)[0];
@@ -64,5 +64,18 @@ describe('ActionShot JS', function(){
       });
     });
 
-  })
+    it('should remove actionshot:ignore html comments after capturing', function(done) {
+      exec("node ./actionshot.js http://localhost:8000/html-comments.html", function(err, stdout, stderr) {
+
+        var commentBody = !!stdout.match("Hello"),
+          commentOpen = !!stdout.match("<!-- actionshot:ignore"),
+          commentClose = !!stdout.match("-->");
+
+        assert.equal(commentBody, true);
+        assert.equal(commentOpen, false);
+        assert.equal(commentClose, false);
+        done();
+      });
+    });
+  });
 });

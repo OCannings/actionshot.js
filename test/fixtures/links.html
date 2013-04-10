@@ -6,8 +6,12 @@
   </head>
   <body>
     <script>
-      document.write('<a href="/a">a</a> <a href="/b">b</a> <a href="/c">c</a>');
-      ActionShot.capture();
+      setTimeout(function() {
+        ActionShot.capture();
+      }, 100);
+      var links = document.createElement("div");
+      links.innerHTML = '<a href="/a">a</a> <a href="/b">b</a> <a href="/c">c</a>';
+      document.getElementsByTagName("body")[0].appendChild(links);
     </script>
   </body>
 </html>

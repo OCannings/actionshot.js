@@ -75,11 +75,15 @@ page.open(url, function (status) {
       jsonOutput["title"] = title;
     }
 
+    var output = stringOutput;
     if (Object.keys(jsonOutput).length > 1) {
-      console.log(JSON.stringify(jsonOutput));
-    } else {
-      console.log(stringOutput);
+      output = JSON.stringify(jsonOutput);
     }
+
+    // filter any actionshot:ignore html comments from the output
+    output = output.replace(/<!--\s*actionshot:ignore\s*([\s\S]*?)\s*-->/gi, "$1");
+
+    console.log(output);
 
     phantom.exit();
   };

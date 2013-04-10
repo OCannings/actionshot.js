@@ -1,4 +1,4 @@
-(function() {
+!(function() {
   "use strict";
 
   var ActionShot, root = this;
@@ -11,11 +11,21 @@
   // Method for automatically stubbing methods when the page
   // isn't being fetched by PhantomJS
   var stub = function(func) {
-    return ActionShot.capturing ? func : function(){};
+    return ActionShot.capturing ? bind(func, ActionShot) : function(){};
   }
 
+  var slice = Array.prototype.slice;
+
+  // bind methods so they're always called in the context of ActionShot, thanks underscore!
+  var bind = function(func, context) {
+    var args = slice.call(arguments, 2);
+    return function() {
+      return func.apply(context, args.concat(slice.call(arguments)));
+    };
+  };
+
   // Disable jQuery animations
-  // todo: make optional
+  // TODO: make optional
   if (ActionShot.capturing) {
     root.jQuery && (jQuery.fx.off = true);
   }
@@ -26,16 +36,18 @@
   ActionShot.capture = stub(function(condition) {
     var poll, conditionIndex;
 
-    conditionIndex = this.conditions.indexOf(condition);
-    if (conditionIndex !== -1) {
-      this.conditions.splice(conditionIndex, 1);
+    if (condition) {
+      conditionIndex = this.conditions.indexOf(condition);
+      if (conditionIndex !== -1) {
+        this.conditions.splice(conditionIndex, 1);
+      }
     }
 
     if (this.conditions.length === 0) {
-      /*poll = setInterval(function callPhantom() {
+      poll = setInterval(function callPhantom() {
         root.callPhantom("actionshot:capture");
-      }, 50);*/
-      setTimeout(callPhantom, 0);
+      }, 50);
+      callPhantom();
     }
   });
 
@@ -45,15 +57,33 @@
     }
   });
 
-}).call(this);
 
-/*
-if (ActionShot.capturing) {
-  document.write("<style id='as-override'> .as-hide { display: none !important }</style>");
-} else {
-  setTimeout(function() {
-    var el = document.getElementById("as-override");
-    el.parentNode.removeChild(el);
-  }, 0);
-}
-*/
+  ActionShot.fallforward = bind(function() {
+    var removeStyle = "actionshot-";
+    removeStyle += this.capturing ? "fallback" : "fallforward";
+
+    var styles = document.getElementsByTagName("style");
+    var el;
+    var styleCache = [];
+
+    for (var i=0;i<styles.length;i++) {
+      styleCache.push(styles[i]);
+    }
+
+    for (var i=0;i<styleCache.length;i++) {
+      el = styleCache[i];
+      if (el.getAttribute("class") === removeStyle) {
+        el.parentNode.removeChild(el);
+      }
+    }
+  }, ActionShot);
+
+  // hide all elements which are fallforward only
+  document.write("<style class='actionshot-fallforward'> .actionshot-fallforward { display: none !important } </style>");
+
+  // hide all elements which are fallback only
+  document.write("<style class='actionshot-fallback'> .actionshot-fallback { display: none !important } </style>");
+
+  // calling ActionShot.fallforward(); will remove the correct style tag allowing the correct elements to become visible.
+
+}).call(this);
