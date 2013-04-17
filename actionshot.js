@@ -4,6 +4,11 @@ var exec = require("child_process").exec,
   Url = require("url"),
   fs = require("fs");
 
+if (argv.v || argv.version) {
+  console.log(JSON.parse(fs.readFileSync(__dirname + "/package.json")).version);
+  process.exit();
+}
+
 const DEBUG = (argv.d || argv.debug || false);
 
 var url = argv._[0],

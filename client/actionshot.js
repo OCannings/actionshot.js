@@ -4,6 +4,8 @@
   var ActionShot, root = this;
   root.ActionShot = ActionShot = {};
 
+  ActionShot.version = "0.0.2";
+
   // Is the page being captured - useful for
   // conditional template rendering
   ActionShot.capturing = ActionShot.fallback = (root.callPhantom && root.callPhantom("actionshot:init")) || false;
