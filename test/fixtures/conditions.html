@@ -6,20 +6,20 @@
   </head>
   <body>
     <script>
-      ActionShot.after("a");
-      ActionShot.after("b");
-      ActionShot.after("c");
+      ActionShot.waitFor("a");
+      ActionShot.waitFor("b");
+      ActionShot.waitFor("c");
 
       ActionShot.capture();
 
       setTimeout(function() {
         document.title += " 1,";
-        ActionShot.capture("c");
+        ActionShot.ready("c");
       }, 100);
 
       setTimeout(function() {
         document.title += " 2,";
-        ActionShot.capture("b");
+        ActionShot.ready("b");
       }, 200);
 
       setTimeout(function() {

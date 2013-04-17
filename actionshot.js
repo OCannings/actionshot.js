@@ -28,17 +28,6 @@ var captureUrl = function(url) {
   }
 
   var start = new Date().getTime();
-  var phantomArgs = ["phantomjs", __dirname + "/scripts/capture.js", url];
-
-  if (crawl) {
-    phantomArgs = phantomArgs.concat(["--html", "--links", "--title"]);
-  } else {
-    "links html title".split(" ").forEach(function(code) {
-      if (argv[code] || argv[code[0]]) {
-        phantomArgs.push("-" + code[0]);
-      }
-    });
-  }
 
   var callback = function(err, stdout, stderr) {
     if (DEBUG && stderr) {
@@ -78,6 +67,22 @@ var captureUrl = function(url) {
       console.log(data);
     }
   };
+
+  var phantomArgs = ["phantomjs", __dirname + "/scripts/capture.js", url];
+
+  if (crawl) {
+    phantomArgs = phantomArgs.concat(["--html", "--links", "--title"]);
+  } else {
+    "links html title".split(" ").forEach(function(code) {
+      if (argv[code] || argv[code[0]]) {
+        phantomArgs.push("-" + code[0]);
+      }
+    });
+  }
+
+  if (argv.timeout) {
+    phantomArgs.push("--timeout=" + argv.timeout);
+  }
 
   phantomArgs = phantomArgs.join(" ");
   phantomArgs = [phantomArgs, callback]

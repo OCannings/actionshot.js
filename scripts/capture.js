@@ -5,6 +5,18 @@ var system = require("system"),
 var url = args[1];
 var browserLogs = "";
 
+var timeout;
+args.forEach(function(arg) {
+  var match = arg.match(/--timeout=([\d]+)/i);
+  if (match) {
+    timeout = match[1];
+  }
+});
+
+if (!timeout) {
+  timeout = 5000;
+}
+
 var arg = function(long, short) {
   return args.indexOf(long) > 0 || args.indexOf(short) > 0;
 }
@@ -79,28 +91,36 @@ var capture = function() {
   }
 
   // filter any actionshot:ignore html comments from the output
-  output = output.replace(/<!--\s*actionshot:ignore\s*([\s\S]*?)\s*-->/gi, "$1");
+  if (output) {
+    output = output.replace(/<!--\s*actionshot:ignore\s*([\s\S]*?)\s*-->/gi, "$1");
+  }
 
   console.log(output);
 
-  phantom.exit();
+  // a defer is needed here to stop phantomjs crashing ~70% of the time
+  setTimeout(function() {
+    phantom.exit();
+  }, 0);
 
 }
 
+var captured = false;
 page.onCallback = function(action) {
   switch (action) {
     case "actionshot:init":
       return true;
     break
     case "actionshot:capture":
-      capture();
+      if (!captured) {
+        capture();
+        captured = true;
+      }
     break;
   }
 }
 
-page.open(url, function (status) {
-  // TODO: make timeout config
-  setTimeout(function() {
-    error("Capture script timed out, please make sure you've included the client side JavaScript and called ActionShot.capture()");
-  }, 3000);
-});
+page.open(url);
+
+setTimeout(function() {
+  error("Capture script timed out attempting to load " + url + " after " + timeout + "ms, please make sure you've included the client side JavaScript and called ActionShot.capture()");
+}, timeout);

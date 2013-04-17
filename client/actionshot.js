@@ -6,7 +6,7 @@
 
   // Is the page being captured - useful for
   // conditional template rendering
-  ActionShot.capturing = ActionShot.fallback = root.callPhantom && root.callPhantom("actionshot:init");
+  ActionShot.capturing = ActionShot.fallback = (root.callPhantom && root.callPhantom("actionshot:init")) || false;
 
   // Method for automatically stubbing methods when the page
   // isn't being fetched by PhantomJS
@@ -33,17 +33,30 @@
   // Conditions which need to be met before a capture will take place
   ActionShot.conditions = [];
 
-  ActionShot.capture = stub(function(condition) {
-    var poll, conditionIndex;
+  // Conditions which have been met already
+  ActionShot.metConditions = [];
 
-    if (condition) {
-      conditionIndex = this.conditions.indexOf(condition);
-      if (conditionIndex !== -1) {
-        this.conditions.splice(conditionIndex, 1);
+  ActionShot.ready = stub(function(condition) {
+    ActionShot.metConditions.push(condition);
+  });
+
+  ActionShot.allConditionsMet = stub(function() {
+    for (var i=0; i<this.conditions.length; i++) {
+      if (this.metConditions.indexOf(this.conditions[i]) === -1) {
+        return false;
       }
     }
+    return true;
+  });
 
-    if (this.conditions.length === 0) {
+  ActionShot.capture = stub(function(condition) {
+    var poll;
+
+    if (condition !== void 0) {
+      this.ready(condition);
+    }
+
+    if (this.allConditionsMet()) {
       poll = setInterval(function callPhantom() {
         root.callPhantom("actionshot:capture");
       }, 50);
@@ -51,7 +64,8 @@
     }
   });
 
-  ActionShot.after = stub(function(condition) {
+
+  ActionShot.after = ActionShot.waitFor = stub(function(condition) {
     if (this.conditions.indexOf(condition) === -1) {
       this.conditions.push(condition);
     }

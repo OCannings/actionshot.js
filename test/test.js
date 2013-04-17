@@ -1,4 +1,4 @@
-var assert = require("assert"),
+var should = require("should"),
   request = require("request"),
   express = require("express"),
   exec = require("child_process").exec,
@@ -16,23 +16,21 @@ describe('ActionShot JS', function(){
   describe('capturing dynamic content', function(){
     it('should extract the correct doctype', function(done){
       exec("node ./actionshot.js http://localhost:8000/doctype.html", function(err, stdout, stderr) {
-        var doctype = stdout.match(/^.*$/m)[0];
-        assert.equal(doctype, '<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">');
+        stdout.should.include('<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">');
         done();
       });
     });
 
     it('should extract the correct links', function(done){
       exec("node ./actionshot.js http://localhost:8000/links.html --links", function(err, stdout, stderr) {
-        assert.deepEqual(JSON.parse(stdout), ["/a", "/b", "/c"]);
+        JSON.parse(stdout).should.eql(["/a", "/b", "/c"]);
         done();
       });
     });
 
     it('should extract the correct title', function(done){
       exec("node ./actionshot.js http://localhost:8000/links.html --title", function(err, stdout, stderr) {
-        stdout = stdout.replace(/\n*$/, "");
-        assert.equal(stdout, "A title");
+        stdout.should.include("A title");
         done();
       });
     });
@@ -40,8 +38,8 @@ describe('ActionShot JS', function(){
     it('should extract the correct links and title', function(done){
       exec("node ./actionshot.js http://localhost:8000/links.html -lt", function(err, stdout, stderr) {
         var output = JSON.parse(stdout);
-        assert.equal(output.title, "A title");
-        assert.deepEqual(output.links, ["/a", "/b", "/c"]);
+        output.title.should.equal("A title");
+        output.links.should.eql(["/a", "/b", "/c"]);
         done();
       });
     });
@@ -50,7 +48,7 @@ describe('ActionShot JS', function(){
       exec("node ./actionshot.js http://localhost:8000/crawl/a.html --crawl", function(err, stdout, stderr) {
         var output = JSON.parse(stdout);
         request("http://localhost:8000/crawl/output.json", function(err, res, body) {
-          assert.deepEqual(output, JSON.parse(body));
+          output.should.eql(JSON.parse(body));
           done();
         });
       });
@@ -58,8 +56,7 @@ describe('ActionShot JS', function(){
 
     it('should wait for all conditions to be met before capturing', function(done) {
       exec("node ./actionshot.js http://localhost:8000/conditions.html --title", function(err, stdout, stderr) {
-        stdout = stdout.replace(/\n*$/, "");
-        assert.equal(stdout, "Easy as 1, 2, 3.");
+        stdout.should.include("Easy as 1, 2, 3.");
         done();
       });
     });
@@ -67,15 +64,28 @@ describe('ActionShot JS', function(){
     it('should remove actionshot:ignore html comments after capturing', function(done) {
       exec("node ./actionshot.js http://localhost:8000/html-comments.html", function(err, stdout, stderr) {
 
-        var commentBody = !!stdout.match("Hello"),
-          commentOpen = !!stdout.match("<!-- actionshot:ignore"),
-          commentClose = !!stdout.match("-->");
-
-        assert.equal(commentBody, true);
-        assert.equal(commentOpen, false);
-        assert.equal(commentClose, false);
+        stdout.should.include("Hello");
+        stdout.should.not.include("<!-- actionshot:ignore");
+        stdout.should.not.include("-->");
         done();
       });
     });
+
+    describe("the timeout flag", function() {
+      it('should obey the timeout flag', function(done) {
+        exec("node ./actionshot.js http://localhost:8000/example.html --title --timeout=1 --debug=true", function(err, stdout, stderr) {
+          stderr.should.include("Capture script timed out");
+          done();
+        });
+      });
+
+      it('should obey the timeout flag', function(done) {
+        exec("node ./actionshot.js http://localhost:8000/example.html --title --timeout=3000 --debug=true", function(err, stdout, stderr) {
+          stderr.should.not.include("Capture script timed out");
+          done();
+        });
+      });
+    });
+
   });
 });

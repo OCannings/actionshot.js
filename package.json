@@ -14,11 +14,11 @@
   "devDependencies": {
     "mocha": "~1.8.2",
     "request": "~2.16.6",
-    "express": "~3.1.0"
+    "express": "~3.1.0",
+    "should": "~1.2.2"
   },
   "scripts": {
-    "start": "node server.js",
-    "test": "mocha"
+    "test": "mocha ./test"
   },
   "engines": {
     "node": "0.8.x"
