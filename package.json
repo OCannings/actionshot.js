@@ -1,6 +1,6 @@
 {
   "name": "actionshot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Capture static versions of your highly dynamic web applications.",
   "author": "Oli Cannings",
   "dependencies": {

@@ -35,7 +35,7 @@ var captureUrl = function(url) {
   var start = new Date().getTime();
 
   var callback = function(err, stdout, stderr) {
-    if (DEBUG && stderr) {
+    if (stderr) {
       error(stderr);
     }
 
